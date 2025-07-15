@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // ✅ Allow frontend origin
+  origin: 'cablepay-8qdtkudk1-divyas-projects-605608a4.vercel.app', // ✅ Allow frontend origin
   credentials: true
 }));
 app.use(express.json());
