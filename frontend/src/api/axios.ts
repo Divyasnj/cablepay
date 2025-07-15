@@ -1,10 +1,6 @@
 import axios from 'axios';
-
-
-
-
 const instance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://cablepay.onrender.com/api',
   withCredentials: false, // You can set this true if using cookies later
   headers: {
     'Content-Type': 'application/json',
