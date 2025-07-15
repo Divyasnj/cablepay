@@ -1,13 +1,15 @@
 import axios from 'axios';
+
+// ✅ Load API base URL from .env
 const instance = axios.create({
-  baseURL: 'https://cablepay.onrender.com/api',
-  withCredentials: false, // You can set this true if using cookies later
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: false, // set to true if using cookies in the future
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Optionally add interceptors (e.g., attach JWT token automatically)
+// ✅ Auto attach token
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
