@@ -16,7 +16,7 @@ const app = express();
 
 app.use(cors({
   origin: 'cablepay-8qdtkudk1-divyas-projects-605608a4.vercel.app', // ✅ Allow frontend origin
-  credentials: true
+  credentials: false
 }));
 app.use(express.json());
 
