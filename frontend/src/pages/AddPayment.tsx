@@ -2,11 +2,17 @@ import { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import { Link } from '@tanstack/react-router';
 import useAutoLogout from '../hooks/useAutoLogout';
+import Select from 'react-select';
 
 interface Customer {
   _id: string;
   name: string;
   area: string;
+}
+
+interface OptionType {
+  value: string;
+  label: string;
 }
 
 const AddPayment = () => {
@@ -16,7 +22,6 @@ const AddPayment = () => {
   const [month, setMonth] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState('');
-  const [searchTerm, setSearchTerm] = useState(''); // 🔍 New
 
   const fetchCustomers = async () => {
     const res = await axios.get('/customers');
@@ -31,6 +36,7 @@ const AddPayment = () => {
 
     try {
       const formattedDate = new Date(date);
+
       await axios.post('/payments', {
         customerId,
         month,
@@ -43,7 +49,6 @@ const AddPayment = () => {
       setMonth('');
       setAmount('');
       setDate('');
-      setSearchTerm('');
     } catch (err: any) {
       if (err.response?.status === 409) {
         alert('⚠️ Payment for this customer and month already exists');
@@ -58,10 +63,10 @@ const AddPayment = () => {
     fetchCustomers();
   }, []);
 
-  // 🔍 Filter customers by name or area
-  const filteredCustomers = customers.filter((c) =>
-    `${c.name} ${c.area}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const customerOptions: OptionType[] = customers.map((c) => ({
+    value: c._id,
+    label: `${c.name} (${c.area})`,
+  }));
 
   return (
     <div className="p-6 max-w-xl mx-auto">
@@ -75,28 +80,13 @@ const AddPayment = () => {
       <h1 className="text-2xl font-bold mb-6 text-blue-700">➕ Add Payment</h1>
 
       <div className="flex flex-col gap-4">
-        {/* 🔍 Search Input */}
-        <input
-          type="text"
-          placeholder="Search by name or area"
-          className="border p-3 rounded"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+        {/* ✅ Searchable Customer Dropdown */}
+        <Select
+          options={customerOptions}
+          onChange={(selected) => setCustomerId(selected?.value || '')}
+          value={customerOptions.find((opt) => opt.value === customerId) || null}
+          placeholder="Search and select customer..."
         />
-
-        {/* 🔽 Customer Dropdown */}
-        <select
-          className="border p-3 rounded"
-          value={customerId}
-          onChange={(e) => setCustomerId(e.target.value)}
-        >
-          <option value="">-- Select Customer --</option>
-          {filteredCustomers.map((c) => (
-            <option key={c._id} value={c._id}>
-              {c.name} ({c.area})
-            </option>
-          ))}
-        </select>
 
         <select
           className="border p-3 rounded"
